@@ -130,5 +130,9 @@ foreach ($items as $item) {
 
 // echo json_encode($items);
 //echo json_encode($fields);
-echo json_encode(array_values($results));
+$output = array(
+  "data"=>array_values($results),
+  "fields"=>$fields,
+);
+echo json_encode($output);
 ?>
