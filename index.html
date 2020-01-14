@@ -1,13 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>title</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
-    <script src="https://d3js.org/d3.v2.min.js"></script>
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <!-- page content -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <title>title</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="//d3js.org/d3.v2.min.js" charset="utf-8"></script>
+  <!-- <script src="script.js"></script> -->
+  <style>
+    body {
+      font: 11px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .circle {
+      fill: #000;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- page content -->
+  <p id="chart"></p>
+  <p id="xMenu"><b>X axis: </b><select></select></p>
+  <p id="yMenu"><b>Y axis: </b><select></select></p>
+  <p id="colourMenu"><b>Colour: </b><select></select></p>
+  <!-- legend -->
+</body>
+<script>
+  var margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 40
+    },
+    width = 960 - margin.left - margin.right,
+    height = 250 - margin.top - margin.bottom;
+
+  var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("g")
+    .attr("class", "y axis");
+    // .attr("transform", "translate(" + margin.left + ",0)");
+
+  svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + (height) + ")");
+
+  var xMenu = d3.select("#xMenu select")
+    .on("change", change);
+  var yMenu = d3.select("#yMenu select")
+    .on("change", change);
+  var colourMenu = d3.select("#colourMenu select")
+    .on("change", change);
+
+  d3.json("responses.php", function(data) {
+    surveyResponses = data;
+    var attributes = d3.keys(data[0]);
+
+    xMenu.selectAll("option")
+      .data(attributes)
+      .enter().append("option")
+      .text(function(d) {
+        return d;
+      });
+    yMenu.selectAll("option")
+      .data(attributes)
+      .enter().append("option")
+      .text(function(d) {
+        return d;
+      });
+    colourMenu.selectAll("option")
+      .data(attributes)
+      .enter().append("option")
+      .text(function(d) {
+        return d;
+      });
+
+    //menu.property("value", "18 to 24 Years");
+
+    change();
+  });
+
+  var altKey;
+
+  d3.select(window)
+    .on("keydown", function() {
+      altKey = d3.event.altKey;
+    })
+    .on("keyup", function() {
+      altKey = false;
+    });
+
+  function change() {
+    // clearTimeout(timeout);
+
+    xAxisAtt = xMenu.property("value");
+    yAxisAtt = yMenu.property("value");
+    colourAtt = colourMenu.property("value");
+
+    var xDomain = [
+      d3.min(surveyResponses, function (d) {return d[xAxisAtt];}),
+      d3.max(surveyResponses, function (d) {return d[xAxisAtt];})
+    ];
+    var yDomain = [
+      d3.min(surveyResponses, function (d) {return d[yAxisAtt];}),
+      d3.max(surveyResponses, function (d) {return d[yAxisAtt];})
+    ];
+
+    // Set the functions
+    x = d3.scale.linear().domain(xDomain).range([0, width]);// - margin.left - margin.right]);
+    y = d3.scale.linear().domain(yDomain).range([height, 0]);// - margin.top - margin.bottom]);
+    // var o = d3.scale.linear().domain([0,m]).range([.5,1]);
+    // var r = d3.scale.linear().domain([0,Math.sqrt(m)]).range([0,30]);
+
+    // Update the Axis
+    var xAxis = d3.svg.axis().scale(x).orient("bottom");
+    var yAxis = d3.svg.axis().scale(y).orient("left");
+
+    svg.selectAll("g .y.axis")
+      .call(yAxis)
+
+    svg.selectAll("g .x.axis")
+      .call(xAxis);
+
+    // setup fill color
+    var cValue = function(d) {
+        return d[colourAtt];
+      },
+      color = d3.scale.category10();
+
+//      redraw();
+    d3.transition()
+      .duration(altKey ? 7500 : 750)
+      .each(redraw);
+  }
+
+  function redraw() {
+
+    var circle = svg.selectAll(".circle")
+      .data(surveyResponses);//, function(d) {
+      //   return d.State;
+      // });
+
+    var circleEnter = circle.enter()
+    .append("circle")
+      .attr("class", "circle")
+      .attr("r", 3.5);
+
+    var circleUpdate = d3.transition(circle)
+    .attr("cx", function (d) { return x(d[xAxisAtt]); })
+    .attr("cy", function (d) { return y(d[yAxisAtt]); });
+      // .attr("transform", function(d) {
+      //   return "translate(0," + (d.y0 = y(d.State)) + ")";
+      // })
+      // .style("fill-opacity", 1);
+
+    // barUpdate.select("rect")
+    //   .attr("width", function(d) {
+    //     return x(d[age]);
+    //   });
+    //
+    // barUpdate.select(".value")
+    //   .attr("x", function(d) {
+    //     return x(d[age]) - 3;
+    //   })
+    //   .text(function(d) {
+    //     return format(d[age]);
+    //   });
+
+    circle.exit().remove();
+
+  }
+
+  // var timeout = setTimeout(function() {
+  //   menu.property("value", "65 Years and Over").node().focus();
+  //   change();
+  // }, 5000);
+</script>
+
 </html>
