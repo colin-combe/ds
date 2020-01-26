@@ -97,7 +97,7 @@ function getAnswer($item, $fieldId, $fieldsArr)
 $results = [];
 
 
-
+$id = 0;
 foreach ($items as $item) {
     $result = [];
     $ok = getAnswer($item, "XV8CdkrDbVt1", $fieldsArr);
@@ -124,6 +124,7 @@ foreach ($items as $item) {
         // 			$results[($item->landing_id).$whyAnswer] = $copiedArr;
         // }
         }
+        $result["id"] = $item->landing_id;
         $results[$item->landing_id] = $result;
     }
 }

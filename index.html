@@ -148,31 +148,132 @@
 
   function redraw() {
 
-    var circle = svg.selectAll(".circle")
-      .data(surveyResponses); //, function(d) {
-    //   return d.State;
-    // });
+    var aggregated = [];
+    for (response of surveyResponses) {
+      var xAtt = response[xAxisAtt],
+        yAtt = response[yAxisAtt];
+      var xList = aggregated[xAtt];
+      if (!xList) {
+        xList = [];
+        aggregated[xAtt] = xList;
+      }
 
-    var circleEnter = circle.enter()
-      .append("circle")
-      .attr("class", "circle")
-      .attr("r", 3.5);
+      var yList = xList[yAtt];
+      if (!yList) {
+        yList = [];
+        xList[yAtt] = yList;
+      }
 
-    var circleUpdate = d3.transition(circle)
-      .attr("cx", function(d) {
-        return x(d[xAxisAtt]);
+      yList.push(response.id);
+      response.list = yList;
+    }
+
+    var gSel = svg.selectAll(".response")
+      .data(surveyResponses, function(d) {
+        return d.id;
+      });
+
+    var gEnter = gSel.enter()
+      .append("g")
+      .attr("class", "response")
+      .attr("transform", function(d) {
+        var listLength = d.list.length;
+        var positionInList = d.list.indexOf(d.id);
+        // console.log("yo, ", positionInList);
+        var rotation = 360 / listLength * positionInList;
+
+        return "translate(" + x(d[xAxisAtt]) + "," + y(d[yAxisAtt]) //+ ")";
+           +") rotate(" + rotation + ")";
       })
-      .attr("cy", function(d) {
-        return y(d[yAxisAtt]);
+      .append("path").attr("class", "pieSlice")
+      .on("click", function (d) {"!", console.log(d)});
+
+    // .append("circle").attr("class", "circle")
+    // .attr("cx", 0).attr("cy", 0).attr("r", 10);
+
+    var gUpdate = d3.transition(gSel)
+      .attr("transform", function(d) {
+        var listLength = d.list.length;
+        var positionInList = d.list.indexOf(d.id);
+        // console.log("yo, ", positionInList);
+        var rotation = 360 / listLength * positionInList;
+
+        return "translate(" + x(d[xAxisAtt]) + "," + y(d[yAxisAtt]) //+ ")";
+          +") rotate(" + rotation + ")";
+      });
+
+    var sliceUpdate = d3.transition(gSel.selectAll(".pieSlice"))
+      .attr("d", function(d) {
+        return getPieSliceArcPath(d);
       })
+
+      //   .attr("cx", function(d) {
+      //     return x(d[xAxisAtt]);
+      //   })
+      //   .attr("cy", function(d) {
+      //     return y(d[yAxisAtt]);
+      //   });
+
+      // var circleUpdate = d3.transition(circle)
+      //   .attr("cx", function(d) {
+      //     return x(d[xAxisAtt]);
+      //   })
+      //   .attr("cy", function(d) {
+      //     return y(d[yAxisAtt]);
+      //   })
+      //   .attr("r", function(d){
+      //     return d.list.length;
+      //   })
       .style("fill", function(d) {
         return colour(d[colourAtt]);
       });
 
-    circle.exit().remove();
+    gSel.exit().remove();
 
   }
 
+  getPieSliceArcPath = function(response) {
+    var listLength = response.list.length;
+    // var positionInList = d.list.indexOf(d.id);
+
+    var startAngle = 0; //((annotation.fstart - 1) / this.participant.size) * 360;
+    var endAngle = 20;// 360 / listLength; //(annotation.fend / this.participant.size) * 360;
+    //just in case
+    // if (startAngle > endAngle) {
+    //   var temp = startAngle;
+    //   startAngle = endAngle;
+    //   endAngle = temp;
+    // }
+    var largeArcFlag = 0,
+      sweepFlag = 1;
+    if ((endAngle - startAngle) > 180) { //|| (endAngle - startAngle) == 0) {
+      largeArcFlag = 1;
+    }
+    //hacky
+    //actually its not clear there is better solution -
+    // https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
+    // if (listLength == 1) {
+    //   startAngle = 0.1;
+    //   endAngle = 359.9;
+    //   sweepFlag = 1;
+    //     largeArcFlag = 1;
+    // }
+
+    var radius = Math.sqrt(response.list.length / Math.PI) * 20; //20;//this.getBlobRadius() - 2;
+    var arcStart = trig(radius, startAngle - 90);
+    var arcEnd = trig(radius, endAngle - 90);
+    return "M0,0 L" + arcStart.x + "," + arcStart.y + " A" + radius + "," +
+      radius + " 0 " + largeArcFlag + " " + sweepFlag + " " + arcEnd.x + "," + arcEnd.y + " Z";
+  };
+
+  trig = function(radius, angleDegrees) {
+    //x = rx + radius * cos(theta) and y = ry + radius * sin(theta)
+    var radians = (angleDegrees / 360) * Math.PI * 2;
+    return {
+      x: (radius * Math.cos(radians)),
+      y: (radius * Math.sin(radians))
+    };
+  };
   // var timeout = setTimeout(function() {
   //   menu.property("value", "65 Years and Over").node().focus();
   //   change();
