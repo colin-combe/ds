@@ -16,7 +16,7 @@
     .axis path,
     .axis line {
       fill: none;
-      stroke: #FFF;
+      /* stroke: #FFF; */
       shape-rendering: crispEdges;
     }
 
@@ -36,10 +36,10 @@
 </body>
 <script>
   var margin = {
-      top: 40,
-      right: 40,
-      bottom: 40,
-      left: 40
+      top: 60,
+      right: 60,
+      bottom: 80,
+      left: 80
     },
     width = 1536 - margin.left - margin.right,
     height = 864 - margin.top - margin.bottom;
@@ -243,11 +243,11 @@
     var endAngle = 360 / listLength;
 
 
-    var pieRadius = Math.sqrt(response.list.length / Math.PI) * 25;
+    var pieRadius = Math.sqrt(response.list.length / Math.PI) * 20;
     var arcStart = trig(pieRadius, startAngle - 90);
     var arcEnd = trig(pieRadius, endAngle - 90);
     var approximatePiePath = "M 0,0";
-    var stepsInArc = 14;
+    var stepsInArc = 10;
     for (var sia = 0; sia <= stepsInArc; sia++) {
 
       var trickyRadius = sia % 2 == 0 ? pieRadius : pieRadius + 20;
