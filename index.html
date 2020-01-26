@@ -10,12 +10,13 @@
   <style>
     body {
       font: 11px sans-serif;
+      background: #000;
     }
 
     .axis path,
     .axis line {
       fill: none;
-      stroke: #000;
+      stroke: #FFF;
       shape-rendering: crispEdges;
     }
 
@@ -28,20 +29,20 @@
 <body>
   <!-- page content -->
   <p id="chart"></p>
-  <p id="xMenu"><b>X axis: </b><select></select></p>
-  <p id="yMenu"><b>Y axis: </b><select></select></p>
-  <p id="colourMenu"><b>Colour: </b><select></select></p>
+  <p style="display:inline-block;" id="xMenu"><b>X axis: </b><select></select></p>
+  <p style="display:inline-block;" id="yMenu"><b>Y axis: </b><select></select></p>
+  <p style="display:inline-block;" id="colourMenu"><b>Colour: </b><select></select></p>
   <!-- legend -->
 </body>
 <script>
   var margin = {
-      top: 20,
-      right: 20,
-      bottom: 30,
+      top: 40,
+      right: 40,
+      bottom: 40,
       left: 40
     },
-    width = 960 - margin.left - margin.right,
-    height = 250 - margin.top - margin.bottom;
+    width = 1536 - margin.left - margin.right,
+    height = 864 - margin.top - margin.bottom;
 
   var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -66,7 +67,8 @@
 
   d3.json("responses.php", function(data) {
     surveyResponses = data.data;
-    var attributes = d3.keys(surveyResponses[0]);
+    attributes = d3.keys(surveyResponses[0]);
+    attributes = attributes.slice(0, attributes.length - 1);
 
     xMenu.selectAll("option")
       .data(attributes)
@@ -103,7 +105,7 @@
     });
 
   function change() {
-    // clearTimeout(timeout);
+    //clearTimeout(timeout);
 
     xAxisAtt = xMenu.property("value");
     yAxisAtt = yMenu.property("value");
@@ -183,13 +185,14 @@
         var rotation = 360 / listLength * positionInList;
 
         return "translate(" + x(d[xAxisAtt]) + "," + y(d[yAxisAtt]) //+ ")";
-           +") rotate(" + rotation + ")";
+          +
+          ") rotate(" + rotation + ")";
       })
       .append("path").attr("class", "pieSlice")
-      .on("click", function (d) {"!", console.log(d)});
-
-    // .append("circle").attr("class", "circle")
-    // .attr("cx", 0).attr("cy", 0).attr("r", 10);
+      .on("click", function(d) {
+        "!",
+        console.log(d)
+      });
 
     var gUpdate = d3.transition(gSel)
       .attr("transform", function(d) {
@@ -199,72 +202,29 @@
         var rotation = 360 / listLength * positionInList;
 
         return "translate(" + x(d[xAxisAtt]) + "," + y(d[yAxisAtt]) //+ ")";
-          +") rotate(" + rotation + ")";
+          +
+          ") rotate(" + rotation + ")";
       });
 
     var sliceUpdate = d3.transition(gSel.selectAll(".pieSlice"))
       .attr("d", function(d) {
-        return getPieSliceArcPath(d);
+        return getPieSlicePath(d);
       })
-
-      //   .attr("cx", function(d) {
-      //     return x(d[xAxisAtt]);
-      //   })
-      //   .attr("cy", function(d) {
-      //     return y(d[yAxisAtt]);
-      //   });
-
-      // var circleUpdate = d3.transition(circle)
-      //   .attr("cx", function(d) {
-      //     return x(d[xAxisAtt]);
-      //   })
-      //   .attr("cy", function(d) {
-      //     return y(d[yAxisAtt]);
-      //   })
-      //   .attr("r", function(d){
-      //     return d.list.length;
-      //   })
       .style("fill", function(d) {
         return colour(d[colourAtt]);
       });
 
     gSel.exit().remove();
 
+    // var timeout = setTimeout(function() {
+    //   randomChange();
+    // }, 2000);
+
   }
 
-  getPieSliceArcPath = function(response) {
-    var listLength = response.list.length;
-    // var positionInList = d.list.indexOf(d.id);
-
-    var startAngle = 0; //((annotation.fstart - 1) / this.participant.size) * 360;
-    var endAngle = 20;// 360 / listLength; //(annotation.fend / this.participant.size) * 360;
-    //just in case
-    // if (startAngle > endAngle) {
-    //   var temp = startAngle;
-    //   startAngle = endAngle;
-    //   endAngle = temp;
-    // }
-    var largeArcFlag = 0,
-      sweepFlag = 1;
-    if ((endAngle - startAngle) > 180) { //|| (endAngle - startAngle) == 0) {
-      largeArcFlag = 1;
-    }
-    //hacky
-    //actually its not clear there is better solution -
-    // https://stackoverflow.com/questions/5737975/circle-drawing-with-svgs-arc-path
-    // if (listLength == 1) {
-    //   startAngle = 0.1;
-    //   endAngle = 359.9;
-    //   sweepFlag = 1;
-    //     largeArcFlag = 1;
-    // }
-
-    var radius = Math.sqrt(response.list.length / Math.PI) * 20; //20;//this.getBlobRadius() - 2;
-    var arcStart = trig(radius, startAngle - 90);
-    var arcEnd = trig(radius, endAngle - 90);
-    return "M0,0 L" + arcStart.x + "," + arcStart.y + " A" + radius + "," +
-      radius + " 0 " + largeArcFlag + " " + sweepFlag + " " + arcEnd.x + "," + arcEnd.y + " Z";
-  };
+  // var timeout = setTimeout(function() {
+  //   randomChange();
+  // }, 2000);
 
   trig = function(radius, angleDegrees) {
     //x = rx + radius * cos(theta) and y = ry + radius * sin(theta)
@@ -274,10 +234,53 @@
       y: (radius * Math.sin(radians))
     };
   };
-  // var timeout = setTimeout(function() {
-  //   menu.property("value", "65 Years and Over").node().focus();
-  //   change();
-  // }, 5000);
+
+
+  getPieSlicePath = function(response) {
+    //approximate pie slice
+    var listLength = response.list.length;
+    var startAngle = 0;
+    var endAngle = 360 / listLength;
+
+
+    var pieRadius = Math.sqrt(response.list.length / Math.PI) * 25;
+    var arcStart = trig(pieRadius, startAngle - 90);
+    var arcEnd = trig(pieRadius, endAngle - 90);
+    var approximatePiePath = "M 0,0";
+    var stepsInArc = 14;
+    for (var sia = 0; sia <= stepsInArc; sia++) {
+
+      var trickyRadius = sia % 2 == 0 ? pieRadius : pieRadius + 20;
+
+      var angle = startAngle + ((endAngle - startAngle) * (sia / stepsInArc));
+      var siaCoord = trig(trickyRadius, angle - 90);
+      approximatePiePath += " L " + siaCoord.x + "," + siaCoord.y;
+    }
+    approximatePiePath += " L " + 0 + "," + 0;
+    approximatePiePath += "  Z";
+    // console.log(approximatePiePath);
+    return approximatePiePath;
+  };
+
+  // randomChange = function (){
+  //   console.log("party");
+  //   var menuChoice = Math.floor(Math.random * 3);
+  //   var menu;
+  //   if (menuChoice == 0) {
+  //     menu = d3.select("#xMenu select")
+  //
+  //   } else if (menuChoice == 1){
+  //     menu = d3.select("#yMenu select")
+  //
+  //   } else {
+  //     menu = d3.select("#colourMenu select")
+  //   }
+  //   var menuOption = Math.floor(Math.random() * attributes.length);
+  //   var colourMenu = d3.select("#colourMenu select")
+  //     .property("value", attributes[menuOption]);
+  // }
+
+
 </script>
 
 </html>
