@@ -73,8 +73,12 @@ function getAnswer($item, $fieldId, $fieldsArr)
             $out = $answer -> $type;
 
             $field = $fieldsArr[$fieldId];
-
-            if ($type === 'choice') {
+            if ($type === 'number') {
+                $out = ((int)($out / 5)) * 5;
+                if ($out > 80) {$out = 80;}
+                if ($out < 10) {$out = 10;}
+            }
+            else if ($type === 'choice') {
                 // $out = $out -> label;
                 $temp = -1;
                 $choices = $field->properties->choices;

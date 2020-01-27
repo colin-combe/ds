@@ -6,6 +6,7 @@
   <title>title</title>
   <!-- <link rel="stylesheet" href="style.css"> -->
   <script src="//d3js.org/d3.v2.min.js" charset="utf-8"></script>
+  <script src="colorbrewer.js" charset="utf-8"></script>
   <!-- <script src="script.js"></script> -->
   <style>
     body {
@@ -92,6 +93,8 @@
     //menu.property("value", "18 to 24 Years");
 
     change();
+
+    setInterval(randomChange, 3000);
   });
 
   var altKey;
@@ -141,10 +144,11 @@
       .call(xAxis);
 
     // setup fill color
-    colour = d3.scale.category10();
+    //colour = d3.scale.category10();
+    colour = d3.scale.ordinal().range(colorbrewer.Set1[7]);
 
     d3.transition()
-      .duration(altKey ? 3000 : 1200)
+      .duration(altKey ? 3000 : 2000)
       .each(redraw);
   }
 
@@ -250,7 +254,7 @@
     var stepsInArc = 10;
     for (var sia = 0; sia <= stepsInArc; sia++) {
 
-      var trickyRadius = sia % 2 == 0 ? pieRadius : pieRadius + 20;
+      var trickyRadius = sia % 2 == 0 ? pieRadius + 20: pieRadius;
 
       var angle = startAngle + ((endAngle - startAngle) * (sia / stepsInArc));
       var siaCoord = trig(trickyRadius, angle - 90);
@@ -262,24 +266,25 @@
     return approximatePiePath;
   };
 
-  // randomChange = function (){
-  //   console.log("party");
-  //   var menuChoice = Math.floor(Math.random * 3);
-  //   var menu;
-  //   if (menuChoice == 0) {
-  //     menu = d3.select("#xMenu select")
-  //
-  //   } else if (menuChoice == 1){
-  //     menu = d3.select("#yMenu select")
-  //
-  //   } else {
-  //     menu = d3.select("#colourMenu select")
-  //   }
-  //   var menuOption = Math.floor(Math.random() * attributes.length);
-  //   var colourMenu = d3.select("#colourMenu select")
-  //     .property("value", attributes[menuOption]);
-  // }
 
+  randomChange = function (){
+
+    console.log("random change");
+    var menuChoice = Math.floor(Math.random() * 3);
+    var menu;
+    if (menuChoice == 0) {
+      menu = d3.select("#xMenu select")
+
+    } else if (menuChoice == 1){
+      menu = d3.select("#yMenu select")
+
+    } else {
+      menu = d3.select("#colourMenu select")
+    }
+    var menuOption = Math.floor(Math.random() * attributes.length);
+    menu.property("value", attributes[menuOption]);
+    change();
+  }
 
 </script>
 
