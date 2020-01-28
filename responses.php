@@ -2,7 +2,10 @@
 
 include 'token.php';
 
-$fieldsUrl = 'https://api.typeform.com/forms/hLICNX';
+// $formId = "hLICNX";// demo
+$formId = "zDB7xx";
+
+$fieldsUrl = 'https://api.typeform.com/forms/'.$formId;
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 //curl_setopt($ch, CURLOPT_USERPWD, "username:$mcApiKey");
@@ -24,7 +27,7 @@ foreach ($fields as $field) {
     $fieldsArr[$field -> id] = $field;//->title;
 }
 
-$responsesUrl = 'https://api.typeform.com/forms/hLICNX/responses?page_size=1000&completed=true';
+$responsesUrl = 'https://api.typeform.com/forms/'.$formId.'/responses?page_size=1000&completed=true';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -43,7 +46,7 @@ if (!$items) {
     echo 'Error gettting responses: '.curl_error($ch);
 }
 
-
+/* //demo
 $questions = [
     //"XV8CdkrDbVt1"=>"*How your answers will get used*",
     //"AHUqhqk1tSGh"=>"How did you hear about ARCADE 2020?",
@@ -62,6 +65,20 @@ $questions = [
     "p4wXFoNP8HqB"=>"age",//"How old are you?",
     "oYovHqyYHmcz"=>"gender",//"What is your gender?",
 ];
+*/
+
+$questions = [
+    "pzeNF6mvgVnf"=>"miles_travelled",//"How many miles have you travelled to get here?",
+    "gCDzS7gBPMQ0"=>"plays_often",//How often do you play video games, including games on your phone?",
+    "BKodpgrlCaoW"=>"plays_online",//"Do you play online games?",
+    "SuajGYfkcSMp"=>"social side important",//"How important is the social side of online video gaming to you?",
+    "qzDDxayCgsgi"=>"years_playing",//"How many years have you been playing video games?",
+    "tW9OSrbYK9cG"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
+    "zihF61GxqVP5"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
+    "GaSrdxtvUrfC"=>"age",//"How old are you?",
+    "skpiEAjjvzlW"=>"gender",//"What is your gender?",
+];
+
 
 // $questions = ["one", "two", "Attending", "MilesTravelled", "rateDS", "OftenPlay", "Online", "Social", "YearsPlaying", "Why", "Effect", "Mood", "Helpful", "Age", "Gender"];
 
@@ -75,21 +92,24 @@ function getAnswer($item, $fieldId, $fieldsArr)
             $field = $fieldsArr[$fieldId];
             if ($type === 'number') {
                 $out = ((int)($out / 5)) * 5;
-                if ($out > 80) {$out = 80;}
-                if ($out < 10) {$out = 10;}
-            }
-            else if ($type === 'choice') {
+                if ($out > 80) {
+                    $out = 80;
+                }
+                if ($out < 10) {
+                    $out = 10;
+                }
+            } elseif ($type === 'choice') {
                 // $out = $out -> label;
                 $temp = -1;
                 $choices = $field->properties->choices;
                 $choiceCount = sizeof($choices);
-                for ($c = 0; $c<$choiceCount;$c++){
-                    if ($out->label == $choices[$c]->label){
+                for ($c = 0; $c<$choiceCount;$c++) {
+                    if ($out->label == $choices[$c]->label) {
                         $temp = $c;
                     }
                 }
                 $out = $temp;
-            } else if ($type === 'choices') {
+            } elseif ($type === 'choices') {
                 $out = -1;// $out->labels;
             }
             return $out;
@@ -104,8 +124,9 @@ $results = [];
 $id = 0;
 foreach ($items as $item) {
     $result = [];
-    $ok = getAnswer($item, "XV8CdkrDbVt1", $fieldsArr);
-   if ($ok == 0) {
+    $ok = getAnswer($item, "OPiNkqN0zZ7T", $fieldsArr); // watch out! - needs to change depending on formID
+    //echo $ok;
+    if ($ok == 1) {
         foreach ($questions as $key=>$value) {
             $result[$value] = getAnswer($item, $key, $fieldsArr);
             // for ($i=0; $i<16; $i++) {
@@ -140,4 +161,3 @@ $output = array(
   "fields"=>$fields,
 );
 echo json_encode($output);
-?>

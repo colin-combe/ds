@@ -71,24 +71,27 @@
     .attr("class", "x axis")
     .attr("transform", "translate(0," + (height) + ")");
 */
-
+  var timeout;
   var xMenu = d3.select("#xMenu select")
     .on("change", function() {
+      clearTimeout(timeout);
       clearInterval(interval);
       change();
-      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+      timeout = setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
     });
   var yMenu = d3.select("#yMenu select")
     .on("change", function() {
+      clearTimeout(timeout);
       clearInterval(interval);
       change();
-      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+      timeout = setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
     });
   var colourMenu = d3.select("#colourMenu select")
     .on("change", function() {
+      clearTimeout(timeout);
       clearInterval(interval);
       change();
-      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+      timeout = setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
     });
 
   d3.json("responses.php", function(data) {
