@@ -14,6 +14,15 @@
       background: #000;
     }
 
+    p,
+    select {
+      font-size: 16pt;
+    }
+
+    p {
+      color: #fff;
+    }
+
     .axis path,
     .axis line {
       fill: none;
@@ -29,10 +38,12 @@
 
 <body>
   <!-- page content -->
-  <p id="chart"></p>
-  <p style="display:inline-block;" id="xMenu"><b>X axis: </b><select></select></p>
-  <p style="display:inline-block;" id="yMenu"><b>Y axis: </b><select></select></p>
-  <p style="display:inline-block;" id="colourMenu"><b>Colour: </b><select></select></p>
+  <p style="float: left;" id="chart"></p>
+  <div style="float: right;">
+    <p id="xMenu"><b>X axis: </b><select></select></p>
+    <p id="yMenu"><b>Y axis: </b><select></select></p>
+    <p id="colourMenu"><b>Colour by: </b><select></select></p>
+  </div>
   <!-- legend -->
 </body>
 <script>
@@ -51,6 +62,7 @@
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+/*
   svg.append("g")
     .attr("class", "y axis");
   // .attr("transform", "translate(" + margin.left + ",0)");
@@ -58,13 +70,26 @@
   svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + (height) + ")");
+*/
 
   var xMenu = d3.select("#xMenu select")
-    .on("change", change);
+    .on("change", function() {
+      clearInterval(interval);
+      change();
+      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+    });
   var yMenu = d3.select("#yMenu select")
-    .on("change", change);
+    .on("change", function() {
+      clearInterval(interval);
+      change();
+      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+    });
   var colourMenu = d3.select("#colourMenu select")
-    .on("change", change);
+    .on("change", function() {
+      clearInterval(interval);
+      change();
+      setTimeout(function (){interval = setInterval(randomChange, 2500);}, 10000);
+    });
 
   d3.json("responses.php", function(data) {
     surveyResponses = data.data;
@@ -94,7 +119,7 @@
 
     change();
 
-    setInterval(randomChange, 3000);
+    interval = setInterval(randomChange, 2500);
   });
 
   var altKey;
@@ -254,7 +279,7 @@
     var stepsInArc = 10;
     for (var sia = 0; sia <= stepsInArc; sia++) {
 
-      var trickyRadius = sia % 2 == 0 ? pieRadius + 20: pieRadius;
+      var trickyRadius = sia % 2 == 0 ? pieRadius + 20 : pieRadius;
 
       var angle = startAngle + ((endAngle - startAngle) * (sia / stepsInArc));
       var siaCoord = trig(trickyRadius, angle - 90);
@@ -267,25 +292,22 @@
   };
 
 
-  randomChange = function (){
+  randomChange = function() {
 
     console.log("random change");
-    var menuChoice = Math.floor(Math.random() * 3);
+    var menuChoice = Math.floor(Math.random() * 7);
     var menu;
-    if (menuChoice == 0) {
-      menu = d3.select("#xMenu select")
-
-    } else if (menuChoice == 1){
-      menu = d3.select("#yMenu select")
-
-    } else {
+    if (menuChoice == 6) {
       menu = d3.select("#colourMenu select")
+    } else if (menuChoice % 2 == 0) {
+      menu = d3.select("#xMenu select")
+    } else {
+      menu = d3.select("#yMenu select")
     }
     var menuOption = Math.floor(Math.random() * attributes.length);
     menu.property("value", attributes[menuOption]);
     change();
   }
-
 </script>
 
 </html>
