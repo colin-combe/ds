@@ -2,6 +2,9 @@
 
 include 'token.php';
 
+error_reporting(0);
+ini_set('display_errors', 0);
+
 // $formId = "hLICNX";// demo
 $formId = "zDB7xx";
 
@@ -99,7 +102,8 @@ function getAnswer($item, $fieldId, $fieldsArr)
                     $out = 10;
                 }
             } elseif ($type === 'choice') {
-                // $out = $out -> label;
+                //echo (string) $out ;
+                //$out = $out->label;
                 $temp = -1;
                 $choices = $field->properties->choices;
                 $choiceCount = sizeof($choices);
