@@ -5,8 +5,8 @@ include 'token.php';
 error_reporting(0);
 ini_set('display_errors', 0);
 
-// $formId = "hLICNX";// demo
-$formId = "zDB7xx";
+// $formId = "hLICNX"; zDB7xx = 2020 // demo
+$formId = "T1GyCUox";
 
 $fieldsUrl = 'https://api.typeform.com/forms/'.$formId;
 $ch = curl_init();
