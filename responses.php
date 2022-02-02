@@ -6,7 +6,7 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 // $formId = "hLICNX"; zDB7xx = 2020 // demo
-$formId = "T1GyCUox";
+$formId = "T1GyCUox";//"zDB7xx";//
 
 $fieldsUrl = 'https://api.typeform.com/forms/'.$formId;
 $ch = curl_init();
@@ -70,18 +70,29 @@ $questions = [
 ];
 */
 
-$questions = [
-    "pzeNF6mvgVnf"=>"miles_travelled",//"How many miles have you travelled to get here?",
-    "gCDzS7gBPMQ0"=>"plays_often",//How often do you play video games, including games on your phone?",
-    "BKodpgrlCaoW"=>"plays_online",//"Do you play online games?",
-    "SuajGYfkcSMp"=>"social side important",//"How important is the social side of online video gaming to you?",
-    "qzDDxayCgsgi"=>"years_playing",//"How many years have you been playing video games?",
-    "tW9OSrbYK9cG"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
-    "zihF61GxqVP5"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
-    "GaSrdxtvUrfC"=>"age",//"How old are you?",
-    "skpiEAjjvzlW"=>"gender",//"What is your gender?",
-];
+//$questions = [
+//    "pzeNF6mvgVnf"=>"miles_travelled",//"How many miles have you travelled to get here?",
+//    "gCDzS7gBPMQ0"=>"plays_often",//How often do you play video games, including games on your phone?",
+//    "BKodpgrlCaoW"=>"plays_online",//"Do you play online games?",
+//    "SuajGYfkcSMp"=>"social side important",//"How important is the social side of online video gaming to you?",
+//    "qzDDxayCgsgi"=>"years_playing",//"How many years have you been playing video games?",
+//    "tW9OSrbYK9cG"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
+//    "zihF61GxqVP5"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
+//    "GaSrdxtvUrfC"=>"age",//"How old are you?",
+//    "skpiEAjjvzlW"=>"gender",//"What is your gender?",
+//];
 
+$questions = [
+    "l55h3wMW5D8u"=>"miles_travelled",//"How many miles have you travelled to get here?",
+    "eh1vPPhrsgYX"=>"plays_often",//How often do you play video games, including games on your phone?",
+    "EEa82lAIosHk"=>"plays_online",//"Do you play online games?",
+    "fsMXMb9Ymuyq"=>"social side important",//"How important is the social side of online video gaming to you?",
+    "aL7vHYXBKtiP"=>"years_playing",//"How many years have you been playing video games?",
+    "GZKPERQUTHbT"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
+    "R4tmQFZIVS9h"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
+    "ESAzGDifDleZ"=>"age",//"How old are you?",
+    "b3QptQLlmfKI"=>"gender",//"What is your gender?",
+];
 
 // $questions = ["one", "two", "Attending", "MilesTravelled", "rateDS", "OftenPlay", "Online", "Social", "YearsPlaying", "Why", "Effect", "Mood", "Helpful", "Age", "Gender"];
 
@@ -128,7 +139,8 @@ $results = [];
 $id = 0;
 foreach ($items as $item) {
     $result = [];
-    $ok = getAnswer($item, "OPiNkqN0zZ7T", $fieldsArr); // watch out! - needs to change depending on formID
+    //the id for how your answers used Q:
+    $ok = getAnswer($item, "racViXeQE4Mz", $fieldsArr); // watch out! - needs to change depending on formID
     //echo $ok;
     if ($ok == 1) {
         foreach ($questions as $key=>$value) {
