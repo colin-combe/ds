@@ -6,7 +6,7 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 // $formId = "hLICNX"; zDB7xx = 2020 // demo
-$formId = "T1GyCUox";//"zDB7xx";//
+$formId = "vow4w3Oc";//"T1GyCUox";//"zDB7xx";//
 
 $fieldsUrl = 'https://api.typeform.com/forms/'.$formId;
 $ch = curl_init();
@@ -45,9 +45,9 @@ curl_setopt($ch, CURLOPT_URL, $responsesUrl);
 
 $items = json_decode(curl_exec($ch)) -> items;
 curl_close($ch);
-if (!$items) {
-    echo 'Error gettting responses: '.curl_error($ch);
-}
+//if (!$items) {
+//    echo 'Error gettting responses: '.curl_error($ch);
+//}
 
 /* //demo
 $questions = [
@@ -83,15 +83,15 @@ $questions = [
 //];
 
 $questions = [
-    "l55h3wMW5D8u"=>"miles_travelled",//"How many miles have you travelled to get here?",
-    "eh1vPPhrsgYX"=>"plays_often",//How often do you play video games, including games on your phone?",
-    "EEa82lAIosHk"=>"plays_online",//"Do you play online games?",
-    "fsMXMb9Ymuyq"=>"social side important",//"How important is the social side of online video gaming to you?",
-    "aL7vHYXBKtiP"=>"years_playing",//"How many years have you been playing video games?",
-    "GZKPERQUTHbT"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
-    "R4tmQFZIVS9h"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
-    "ESAzGDifDleZ"=>"age",//"How old are you?",
-    "b3QptQLlmfKI"=>"gender",//"What is your gender?",
+    "QCqCHvKQ0PFe"=>"miles_travelled",//"How many miles have you travelled to get here?",
+    "6IoOaHSU4Qk8"=>"plays_often",//How often do you play video games, including games on your phone?",
+    "f0i6RfigeCG4"=>"plays_online",//"Do you play online games?",
+    "sKWJsUVm8E4f"=>"social side important",//"How important is the social side of online video gaming to you?",
+    "UhPGbOKFpfai"=>"years_playing",//"How many years have you been playing video games?",
+    "BhhRrqLKtYuC"=>"effect_on_wellbeing",//"Do you think video gaming has a mostly positive or negative effect on your mental health and wellbeing?",
+    "oAu1xUqwXLZh"=>"is_helpful",//"At times of difficulty in your life, have you ever found video gaming to be helpful?",
+    "qG02WbxlUVxN"=>"age",//"How old are you?",
+    "lFt9dEyBQ73y"=>"gender",//"What is your gender?",
 ];
 
 // $questions = ["one", "two", "Attending", "MilesTravelled", "rateDS", "OftenPlay", "Online", "Social", "YearsPlaying", "Why", "Effect", "Mood", "Helpful", "Age", "Gender"];
@@ -140,7 +140,7 @@ $id = 0;
 foreach ($items as $item) {
     $result = [];
     //the id for how your answers used Q:
-    $ok = getAnswer($item, "racViXeQE4Mz", $fieldsArr); // watch out! - needs to change depending on formID
+    $ok = getAnswer($item, "UTQiLMiXIk41", $fieldsArr); // watch out! - needs to change depending on formID
     //echo $ok;
     if ($ok == 1) {
         foreach ($questions as $key=>$value) {
